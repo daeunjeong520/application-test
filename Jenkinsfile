@@ -7,7 +7,7 @@ pipeline {
   environment {
     //dockerHubRegistry = 'ccamm1/demo-eks-cicd' 
     //dockerHubRegistryCredential = 'credential-dockerhub'
-    awsecrRegistry = '767397827522.dkr.ecr.ap-northeast-2.amazonaws.com/eks-demo-repo'
+    awsecrRegistry = '767397827522.dkr.ecr.ap-northeast-2.amazonaws.com/cicd-test'
     awsecrRegistryCredential = 'credential-AWS-ECR'
     githubCredential = 'credential-github'
     gitEmail = 'jungde1345@gmail.com'
@@ -19,7 +19,7 @@ pipeline {
     // 깃허브 계정으로 레포지토리를 클론한다.
     stage('Checkout Application Git Branch') {
       steps {
-        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: 'https://github.com/daeunjeong520/kustomize.git']]])
+        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: 'https://github.com/daeunjeong520/application-test']]])
       }
       // steps 가 끝날 경우 실행한다.
       // steps 가 실패할 경우에는 failure 를 실행하고 성공할 경우에는 success 를 실행한다.
@@ -83,7 +83,7 @@ pipeline {
       steps {
         // git 계정 로그인, 해당 레포지토리의 main 브랜치에서 클론
         git credentialsId: githubCredential,
-            url: 'https://github.com/daeunjeong520/kustomize.git',
+            url: 'https://github.com/daeunjeong520/application-test.git',
             branch: 'main'  
         
         // 이미지 태그 변경 후 메인 브랜치에 푸시
@@ -101,7 +101,7 @@ pipeline {
     stage('Push to Git Repository') {
       steps {
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: githubCredential, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-             sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/daeunjeong520/kustomize.git"       
+             sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/daeunjeong520/application.git"       
         }
       }
     }
